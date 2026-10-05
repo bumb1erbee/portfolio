@@ -34,38 +34,54 @@
             cursor: default;
         }
 
-        body::before {
-            content: '';
+        /* ===== ФИКСИРОВАННЫЙ ФОН ЧЕРЕЗ ОТДЕЛЬНЫЙ СЛОЙ (не дёргается на мобильных) ===== */
+        .bg-layer {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: -3;
             background: url('https://i.postimg.cc/NjYLmXJw/3e6e66f2aadfc0a26bb4236030528b61.jpg') center/cover no-repeat;
-            z-index: -2;
             filter: brightness(0.85) saturate(0.9) contrast(1.05);
-            opacity: 1;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            will-change: transform;
+            pointer-events: none;
         }
 
-        body::after {
-            content: '';
+        .bg-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: -2;
             background: rgba(10, 10, 18, 0.15);
-            z-index: -1;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            will-change: transform;
+            pointer-events: none;
+        }
+
+        /* ===== МОБИЛЬНАЯ ВЕРСИЯ ФОНА ===== */
+        @media (max-width: 768px), (hover: none) and (pointer: coarse) {
+            .bg-layer {
+                background: url('https://i.postimg.cc/2595sKzR/3bef7fd083700288677a85e1b0942848.jpg') center/cover no-repeat;
+                background-attachment: scroll;
+            }
         }
 
         .bg-glow {
             position: fixed;
             border-radius: 50%;
             pointer-events: none;
-            z-index: 0;
+            z-index: -1;
             filter: blur(80px);
             opacity: 0.25;
             animation: floatGlow 12s ease-in-out infinite;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
         }
 
         .bg-glow:nth-child(1) {
@@ -583,10 +599,6 @@
                 font-size: 11px;
             }
 
-            body::before {
-                background: url('https://i.postimg.cc/2595sKzR/3bef7fd083700288677a85e1b0942848.jpg') center/cover no-repeat;
-            }
-
             /* Убираем свечения на фоне */
             .bg-glow {
                 display: none;
@@ -614,7 +626,6 @@
                 opacity: 0.7;
             }
 
-            /* Убираем пульсацию иконки возле заголовков */
             .section-title::before {
                 animation: none;
                 opacity: 0.7;
@@ -787,6 +798,9 @@
 </head>
 <body>
 
+    <div class="bg-layer"></div>
+    <div class="bg-overlay"></div>
+
     <div class="bg-glow"></div>
     <div class="bg-glow"></div>
     <div class="bg-glow"></div>
@@ -898,7 +912,6 @@
                     this.size = Math.random() * 3 + 3;
                     this.color = trailColors[Math.floor(Math.random() * trailColors.length)];
                     this.life = 1;
-                    /* Медленнее исчезают — не мелькают */
                     this.decay = Math.random() * 0.008 + 0.006;
                     this.rotation = Math.random() * Math.PI;
                     this.rotationSpeed = (Math.random() - 0.5) * 0.05;
@@ -918,7 +931,6 @@
                 }
                 draw() {
                     const scale = 1 + Math.sin(this.pulse) * 0.15;
-                    /* Плавное появление и исчезновение, без мигания */
                     const alpha = Math.min(1, this.life * 1.2) * 0.8;
                     trailCtx.save();
                     trailCtx.translate(this.x, this.y);
@@ -950,7 +962,6 @@
             }
 
             function spawnTrailStar(x, y) {
-                /* Ограничиваем общее количество звёзд */
                 if (trailStars.length < 50) {
                     trailStars.push(new TrailStar(x, y));
                 }
@@ -958,7 +969,6 @@
 
             document.addEventListener('mousemove', (e) => {
                 const now = Date.now();
-                /* Ограничиваем частоту создания звёзд (не чаще 25 раз в секунду) */
                 if (now - lastSpawnTime < 40) return;
                 
                 const dx = e.clientX - lastMouseX;
@@ -1067,7 +1077,6 @@
         }
 
         function createBurst(x, y, count) {
-            /* На телефоне меньше звёзд, чтобы не лагало */
             const maxCount = isMobile ? 12 : 20;
             const limitedCount = Math.min(count || maxCount, maxCount);
             for (let i = 0; i < limitedCount; i++) {
@@ -1077,7 +1086,6 @@
 
         function animateParticles() {
             particleCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-            /* Жёсткое ограничение количества звёзд */
             const maxStars = isMobile ? 60 : 150;
             if (burstStars.length > maxStars) {
                 burstStars = burstStars.slice(-Math.floor(maxStars * 0.7));
@@ -1097,7 +1105,6 @@
             setTimeout(() => { createBurst(e.clientX, e.clientY, isMobile ? 6 : 12); }, 60);
         });
 
-        /* На телефоне — звёздочки при касании */
         if (isMobile) {
             document.addEventListener('touchstart', (e) => {
                 if (e.target.closest('a')) return;
