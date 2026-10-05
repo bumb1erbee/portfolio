@@ -416,8 +416,9 @@
         .link-card {
             display: flex;
             flex-direction: column;
+            align-items: center;
             gap: 12px;
-            padding: 22px 20px;
+            padding: 26px 20px;
             background: rgba(255, 255, 255, 0.04);
             border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 10px;
@@ -427,6 +428,7 @@
             position: relative;
             overflow: hidden;
             cursor: pointer;
+            text-align: center;
         }
 
         .link-card::before {
@@ -457,16 +459,16 @@
             transform: translateY(-2px) scale(0.98);
         }
 
-        /* ===== МИНИ-ИКОНКИ НАД ПЛАШКАМИ ===== */
+        /* ===== МИНИ-ИКОНКИ НАД ПЛАШКАМИ (УВЕЛИЧЕНЫ В 2 РАЗА, ПО ЦЕНТРУ) ===== */
         .link-icon {
-            width: 64px;
-            height: 64px;
+            width: 128px;
+            height: 128px;
             object-fit: contain;
             image-rendering: pixelated;
             filter: drop-shadow(0 0 12px rgba(234, 137, 190, 0.35));
             transition: all 0.4s ease;
-            margin-bottom: 4px;
-            align-self: flex-start;
+            margin-bottom: 8px;
+            align-self: center;
         }
 
         .link-card:hover .link-icon {
@@ -516,7 +518,7 @@
             color: rgba(255, 255, 255, 0.4);
             margin-top: auto;
             transition: all 0.3s ease;
-            align-self: flex-end;
+            align-self: center;
         }
 
         .link-card:hover .link-arrow {
@@ -645,13 +647,13 @@
             }
 
             .link-card {
-                padding: 18px 16px;
+                padding: 22px 16px;
                 gap: 10px;
             }
 
             .link-icon {
-                width: 52px;
-                height: 52px;
+                width: 100px;
+                height: 100px;
             }
 
             .link-title {
@@ -721,12 +723,12 @@
             }
 
             .link-card {
-                padding: 14px 12px;
+                padding: 18px 12px;
             }
 
             .link-icon {
-                width: 44px;
-                height: 44px;
+                width: 88px;
+                height: 88px;
             }
 
             .link-title {
@@ -787,7 +789,7 @@
                     <img class="link-icon" src="https://i.postimg.cc/5NBYjJBn/favicon.png" alt="Pony Town Gallery" loading="lazy">
                     <span class="link-number">01</span>
                     <span class="link-title">Pony Town Gallery</span>
-                    <span class="link-desc">Галерея скинов Pony Town</span>
+                    <span class="link-desc">Галерея скинов и персонажей Pony Town</span>
                     <span class="link-arrow">→</span>
                 </a>
 
