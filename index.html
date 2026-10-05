@@ -457,6 +457,23 @@
             transform: translateY(-2px) scale(0.98);
         }
 
+        /* ===== МИНИ-ИКОНКИ НАД ПЛАШКАМИ ===== */
+        .link-icon {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 0 12px rgba(234, 137, 190, 0.35));
+            transition: all 0.4s ease;
+            margin-bottom: 4px;
+            align-self: flex-start;
+        }
+
+        .link-card:hover .link-icon {
+            filter: drop-shadow(0 0 22px rgba(234, 137, 190, 0.7));
+            transform: scale(1.1) rotate(-3deg);
+        }
+
         .link-number {
             font-size: 10px;
             color: rgba(234, 137, 190, 0.6);
@@ -507,7 +524,6 @@
             transform: translateX(6px);
         }
 
-        /* ===== ТЕКСТ "ОБО МНЕ" ===== */
         .about-text {
             font-size: 11px;
             line-height: 2.2;
@@ -633,6 +649,11 @@
                 gap: 10px;
             }
 
+            .link-icon {
+                width: 52px;
+                height: 52px;
+            }
+
             .link-title {
                 font-size: 11px;
             }
@@ -703,6 +724,11 @@
                 padding: 14px 12px;
             }
 
+            .link-icon {
+                width: 44px;
+                height: 44px;
+            }
+
             .link-title {
                 font-size: 10px;
                 letter-spacing: 1.5px;
@@ -754,10 +780,11 @@
         <div class="frame">
             <img class="deco-corner" src="https://i.postimg.cc/c4PVrqmq/cfkir.png" alt="deco" loading="lazy">
             <img class="deco-corner" src="https://i.postimg.cc/0ymhStWV/fukr.png" alt="deco" loading="lazy">
-            <div class="section-title">⌲ мои проекты</div>
+            <div class="section-title">☆ мои проекты</div>
             <div class="links-grid">
 
                 <a class="link-card" href="https://bumb1erbee.github.io/pony-town-gallery" target="_blank">
+                    <img class="link-icon" src="https://i.postimg.cc/5NBYjJBn/favicon.png" alt="Pony Town Gallery" loading="lazy">
                     <span class="link-number">01</span>
                     <span class="link-title">Pony Town Gallery</span>
                     <span class="link-desc">Галерея скинов Pony Town</span>
@@ -765,6 +792,7 @@
                 </a>
 
                 <a class="link-card" href="https://bumb1erbee.github.io/my-profile-1" target="_blank">
+                    <img class="link-icon" src="https://i.postimg.cc/LsXnyZrG/34b92c675ca0207a6c2255db2c7e0246-no-bg-preview-(carve-photos).png" alt="Webcore-профиль" loading="lazy">
                     <span class="link-number">02</span>
                     <span class="link-title">Webcore-профиль</span>
                     <span class="link-desc">Сайт-портфолио в эстетике webcore</span>
@@ -772,6 +800,7 @@
                 </a>
 
                 <a class="link-card" href="https://bumb1erbee.github.io/profile_1" target="_blank">
+                    <img class="link-icon" src="https://i.postimg.cc/brXrNVdK/ebfb06438b903069e40d59e44d794e10-no-bg-preview-(carve-photos).png" alt="Лесной профиль" loading="lazy">
                     <span class="link-number">03</span>
                     <span class="link-title">Лесной профиль</span>
                     <span class="link-desc">Сайт-портфолио с лесной тематикой</span>
@@ -779,6 +808,7 @@
                 </a>
 
                 <a class="link-card" href="https://bumb1erbee.github.io/customwebs" target="_blank">
+                    <img class="link-icon" src="https://i.postimg.cc/jqNCkTFn/cdd55049588a94f69e3d3c551abf16c3-fotor-bg-remover-20260730182149.png" alt="Сайты на заказ" loading="lazy">
                     <span class="link-number">04</span>
                     <span class="link-title">Сайты на заказ</span>
                     <span class="link-desc">Заказать сайт под себя</span>
@@ -791,7 +821,7 @@
         <div class="frame">
             <img class="deco-corner" src="https://i.postimg.cc/JnTF8S0r/fukrufkr.png" alt="deco" loading="lazy">
             <img class="deco-corner" src="https://i.postimg.cc/05B4Bgh5/venlenl.png" alt="deco" loading="lazy">
-            <div class="section-title">⌲ обо мне</div>
+            <div class="section-title">☆ обо мне</div>
             <p class="about-text">
                 Привет! Я Шмель и создаю сайты для разных целей в разных стилях. Применяю в своей работе ИИ, но понимаю код, а также умею работать с GitHub, Cloudflare и другими сервисами, которые помогают воплощать всякие задумки. Если хочешь сделать сайт на заказ, отправь свою заявку <a class="about-link" href="https://bumb1erbee.github.io/customwebs" target="_blank">здесь</a>!
             </p>
