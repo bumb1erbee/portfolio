@@ -459,7 +459,6 @@
             transform: translateY(-2px) scale(0.98);
         }
 
-        /* ===== МИНИ-ИКОНКИ НАД ПЛАШКАМИ (УВЕЛИЧЕНЫ В 2 РАЗА, ПО ЦЕНТРУ) ===== */
         .link-icon {
             width: 128px;
             height: 128px;
@@ -575,7 +574,10 @@
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
-        @media (max-width: 768px) {
+        /* ============================================= */
+        /* ===== МОБИЛЬНАЯ ОПТИМИЗАЦИЯ ===== */
+        /* ============================================= */
+        @media (max-width: 768px), (hover: none) and (pointer: coarse) {
             body {
                 padding: 12px;
                 font-size: 11px;
@@ -585,14 +587,38 @@
                 background: url('https://i.postimg.cc/2595sKzR/3bef7fd083700288677a85e1b0942848.jpg') center/cover no-repeat;
             }
 
+            /* Убираем свечения на фоне */
             .bg-glow {
-                filter: blur(60px);
-                opacity: 0.2;
+                display: none;
             }
 
-            .bg-glow:nth-child(1) { width: 250px; height: 250px; }
-            .bg-glow:nth-child(2) { width: 220px; height: 220px; }
-            .bg-glow:nth-child(3) { width: 200px; height: 200px; }
+            /* Убираем след за мышкой */
+            #trail-canvas {
+                display: none;
+            }
+
+            /* Убираем парение фреймов */
+            .frame {
+                animation: fadeUp 0.6s ease forwards !important;
+            }
+
+            /* Убираем вращение декоративных картинок */
+            .deco-corner {
+                animation: none;
+            }
+
+            /* Убираем анимацию мерцания звёздочек в заголовке */
+            .page-title::before,
+            .page-title::after {
+                animation: none;
+                opacity: 0.7;
+            }
+
+            /* Убираем пульсацию иконки возле заголовков */
+            .section-title::before {
+                animation: none;
+                opacity: 0.7;
+            }
 
             #main-content {
                 gap: 22px;
@@ -840,130 +866,137 @@
     </div>
 
     <script>
-        const trailCanvas = document.getElementById('trail-canvas');
-        const trailCtx = trailCanvas.getContext('2d');
-        let trailStars = [];
-        const trailColors = ['#EA89BE', '#F7D356', '#57D3D3', '#FFFFFF'];
-        let lastMouseX = 0;
-        let lastMouseY = 0;
+        /* ===== ОПРЕДЕЛЯЕМ МОБИЛЬНОЕ УСТРОЙСТВО ===== */
+        const isMobile = window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches;
 
-        function resizeTrailCanvas() {
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            trailCanvas.width = window.innerWidth * dpr;
-            trailCanvas.height = window.innerHeight * dpr;
-            trailCanvas.style.width = window.innerWidth + 'px';
-            trailCanvas.style.height = window.innerHeight + 'px';
-            trailCtx.scale(dpr, dpr);
-        }
+        /* ============================================= */
+        /* ===== СЛЕД ИЗ ЗВЁЗДОЧЕК ЗА МЫШКОЙ ===== */
+        /* ============================================= */
+        if (!isMobile) {
+            const trailCanvas = document.getElementById('trail-canvas');
+            const trailCtx = trailCanvas.getContext('2d');
+            let trailStars = [];
+            const trailColors = ['#EA89BE', '#F7D356', '#57D3D3', '#FFFFFF'];
+            let lastMouseX = 0;
+            let lastMouseY = 0;
+            let lastSpawnTime = 0;
 
-        class TrailStar {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.size = Math.random() * 5 + 4;
-                this.color = trailColors[Math.floor(Math.random() * trailColors.length)];
-                this.life = 1;
-                this.decay = Math.random() * 0.02 + 0.015;
-                this.rotation = Math.random() * Math.PI;
-                this.rotationSpeed = (Math.random() - 0.5) * 0.1;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5 - 0.3;
-                this.pulse = Math.random() * Math.PI * 2;
-                this.pulseSpeed = Math.random() * 0.1 + 0.05;
+            function resizeTrailCanvas() {
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                trailCanvas.width = window.innerWidth * dpr;
+                trailCanvas.height = window.innerHeight * dpr;
+                trailCanvas.style.width = window.innerWidth + 'px';
+                trailCanvas.style.height = window.innerHeight + 'px';
+                trailCtx.setTransform(1, 0, 0, 1, 0, 0);
+                trailCtx.scale(dpr, dpr);
             }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.vx *= 0.97;
-                this.vy *= 0.97;
-                this.rotation += this.rotationSpeed;
-                this.pulse += this.pulseSpeed;
-                this.life -= this.decay;
-                this.size *= 0.995;
-            }
-            draw() {
-                const scale = 1 + Math.sin(this.pulse) * 0.2;
-                const alpha = this.life * 0.85;
-                trailCtx.save();
-                trailCtx.translate(this.x, this.y);
-                trailCtx.rotate(this.rotation);
-                trailCtx.globalAlpha = alpha;
-                trailCtx.shadowBlur = 18;
-                trailCtx.shadowColor = this.color;
-                trailCtx.fillStyle = this.color;
-                
-                const s = this.size * scale;
-                trailCtx.beginPath();
-                for (let i = 0; i < 4; i++) {
-                    const angle = (i * Math.PI) / 2;
-                    const outerX = Math.cos(angle) * s;
-                    const outerY = Math.sin(angle) * s;
-                    const innerAngle = angle + Math.PI / 4;
-                    const innerX = Math.cos(innerAngle) * s * 0.35;
-                    const innerY = Math.sin(innerAngle) * s * 0.35;
-                    if (i === 0) {
-                        trailCtx.moveTo(outerX, outerY);
-                    } else {
-                        trailCtx.lineTo(outerX, outerY);
-                    }
-                    trailCtx.lineTo(innerX, innerY);
+
+            class TrailStar {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.size = Math.random() * 3 + 3;
+                    this.color = trailColors[Math.floor(Math.random() * trailColors.length)];
+                    this.life = 1;
+                    /* Медленнее исчезают — не мелькают */
+                    this.decay = Math.random() * 0.008 + 0.006;
+                    this.rotation = Math.random() * Math.PI;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.05;
+                    this.vx = (Math.random() - 0.5) * 0.3;
+                    this.vy = (Math.random() - 0.5) * 0.3 - 0.15;
+                    this.pulse = Math.random() * Math.PI * 2;
+                    this.pulseSpeed = Math.random() * 0.05 + 0.02;
                 }
-                trailCtx.closePath();
-                trailCtx.fill();
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.vx *= 0.98;
+                    this.vy *= 0.98;
+                    this.rotation += this.rotationSpeed;
+                    this.pulse += this.pulseSpeed;
+                    this.life -= this.decay;
+                }
+                draw() {
+                    const scale = 1 + Math.sin(this.pulse) * 0.15;
+                    /* Плавное появление и исчезновение, без мигания */
+                    const alpha = Math.min(1, this.life * 1.2) * 0.8;
+                    trailCtx.save();
+                    trailCtx.translate(this.x, this.y);
+                    trailCtx.rotate(this.rotation);
+                    trailCtx.globalAlpha = Math.max(0, alpha);
+                    trailCtx.shadowBlur = 10;
+                    trailCtx.shadowColor = this.color;
+                    trailCtx.fillStyle = this.color;
+                    
+                    const s = this.size * scale;
+                    trailCtx.beginPath();
+                    for (let i = 0; i < 4; i++) {
+                        const angle = (i * Math.PI) / 2;
+                        const outerX = Math.cos(angle) * s;
+                        const outerY = Math.sin(angle) * s;
+                        const innerAngle = angle + Math.PI / 4;
+                        const innerX = Math.cos(innerAngle) * s * 0.35;
+                        const innerY = Math.sin(innerAngle) * s * 0.35;
+                        if (i === 0) trailCtx.moveTo(outerX, outerY);
+                        else trailCtx.lineTo(outerX, outerY);
+                        trailCtx.lineTo(innerX, innerY);
+                    }
+                    trailCtx.closePath();
+                    trailCtx.fill();
+                    
+                    trailCtx.shadowBlur = 0;
+                    trailCtx.restore();
+                }
+            }
+
+            function spawnTrailStar(x, y) {
+                /* Ограничиваем общее количество звёзд */
+                if (trailStars.length < 50) {
+                    trailStars.push(new TrailStar(x, y));
+                }
+            }
+
+            document.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                /* Ограничиваем частоту создания звёзд (не чаще 25 раз в секунду) */
+                if (now - lastSpawnTime < 40) return;
                 
-                trailCtx.shadowBlur = 0;
-                trailCtx.restore();
-            }
-        }
-
-        function spawnTrailStar(x, y) {
-            if (trailStars.length < 100) {
-                trailStars.push(new TrailStar(x, y));
-            }
-        }
-
-        document.addEventListener('mousemove', (e) => {
-            const dx = e.clientX - lastMouseX;
-            const dy = e.clientY - lastMouseY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            
-            if (dist > 10) {
-                spawnTrailStar(e.clientX, e.clientY);
-                lastMouseX = e.clientX;
-                lastMouseY = e.clientY;
-            }
-        });
-
-        document.addEventListener('touchmove', (e) => {
-            const touch = e.touches[0];
-            if (touch) {
-                const dx = touch.clientX - lastMouseX;
-                const dy = touch.clientY - lastMouseY;
+                const dx = e.clientX - lastMouseX;
+                const dy = e.clientY - lastMouseY;
                 const dist = Math.sqrt(dx * dx + dy * dy);
                 
-                if (dist > 10) {
-                    spawnTrailStar(touch.clientX, touch.clientY);
-                    lastMouseX = touch.clientX;
-                    lastMouseY = touch.clientY;
+                if (dist > 15) {
+                    spawnTrailStar(e.clientX, e.clientY);
+                    lastMouseX = e.clientX;
+                    lastMouseY = e.clientY;
+                    lastSpawnTime = now;
                 }
-            }
-        }, { passive: true });
+            });
 
-        function animateTrail() {
-            trailCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-            
-            for (let i = trailStars.length - 1; i >= 0; i--) {
-                const star = trailStars[i];
-                star.update();
-                star.draw();
-                if (star.life <= 0) {
-                    trailStars.splice(i, 1);
+            function animateTrail() {
+                trailCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                
+                for (let i = trailStars.length - 1; i >= 0; i--) {
+                    const star = trailStars[i];
+                    star.update();
+                    star.draw();
+                    if (star.life <= 0) {
+                        trailStars.splice(i, 1);
+                    }
                 }
+                
+                requestAnimationFrame(animateTrail);
             }
-            
-            requestAnimationFrame(animateTrail);
+
+            resizeTrailCanvas();
+            animateTrail();
+
+            window.addEventListener('resize', resizeTrailCanvas);
         }
 
+        /* ============================================= */
+        /* ===== ЗВЁЗДОЧКИ ПРИ КЛИКЕ ===== */
+        /* ============================================= */
         const particleCanvas = document.getElementById('particles-canvas');
         const particleCtx = particleCanvas.getContext('2d');
         let burstStars = [];
@@ -974,6 +1007,7 @@
             particleCanvas.height = window.innerHeight * dpr;
             particleCanvas.style.width = window.innerWidth + 'px';
             particleCanvas.style.height = window.innerHeight + 'px';
+            particleCtx.setTransform(1, 0, 0, 1, 0, 0);
             particleCtx.scale(dpr, dpr);
         }
 
@@ -982,14 +1016,14 @@
                 this.x = x;
                 this.y = y;
                 const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 5 + 2.5;
+                const speed = Math.random() * 4 + 2;
                 this.vx = Math.cos(angle) * speed;
                 this.vy = Math.sin(angle) * speed;
-                this.size = Math.random() * 5 + 4;
+                this.size = Math.random() * 4 + 3;
                 this.life = 1;
-                this.decay = Math.random() * 0.015 + 0.008;
+                this.decay = Math.random() * 0.012 + 0.008;
                 this.rotation = Math.random() * Math.PI;
-                this.rotationSpeed = (Math.random() - 0.5) * 0.15;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.12;
                 this.color = '#FFFFFF';
             }
             update() {
@@ -1002,12 +1036,12 @@
                 this.size *= 0.99;
             }
             draw() {
-                const alpha = this.life * 0.95;
+                const alpha = Math.min(1, this.life * 1.2) * 0.9;
                 particleCtx.save();
                 particleCtx.translate(this.x, this.y);
                 particleCtx.rotate(this.rotation);
-                particleCtx.globalAlpha = alpha;
-                particleCtx.shadowBlur = 22;
+                particleCtx.globalAlpha = Math.max(0, alpha);
+                particleCtx.shadowBlur = 12;
                 particleCtx.shadowColor = '#FFFFFF';
                 particleCtx.fillStyle = this.color;
                 
@@ -1020,11 +1054,8 @@
                     const innerAngle = angle + Math.PI / 4;
                     const innerX = Math.cos(innerAngle) * s * 0.35;
                     const innerY = Math.sin(innerAngle) * s * 0.35;
-                    if (i === 0) {
-                        particleCtx.moveTo(outerX, outerY);
-                    } else {
-                        particleCtx.lineTo(outerX, outerY);
-                    }
+                    if (i === 0) particleCtx.moveTo(outerX, outerY);
+                    else particleCtx.lineTo(outerX, outerY);
                     particleCtx.lineTo(innerX, innerY);
                 }
                 particleCtx.closePath();
@@ -1035,8 +1066,10 @@
             }
         }
 
-        function createBurst(x, y, count = 20) {
-            const limitedCount = Math.min(count, 25);
+        function createBurst(x, y, count) {
+            /* На телефоне меньше звёзд, чтобы не лагало */
+            const maxCount = isMobile ? 12 : 20;
+            const limitedCount = Math.min(count || maxCount, maxCount);
             for (let i = 0; i < limitedCount; i++) {
                 burstStars.push(new BurstStar(x, y));
             }
@@ -1044,11 +1077,12 @@
 
         function animateParticles() {
             particleCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-            const len = burstStars.length;
-            if (len > 200) {
-                burstStars = burstStars.slice(-150);
+            /* Жёсткое ограничение количества звёзд */
+            const maxStars = isMobile ? 60 : 150;
+            if (burstStars.length > maxStars) {
+                burstStars = burstStars.slice(-Math.floor(maxStars * 0.7));
             }
-            for (let i = len - 1; i >= 0; i--) {
+            for (let i = burstStars.length - 1; i >= 0; i--) {
                 const star = burstStars[i];
                 star.update();
                 star.draw();
@@ -1060,22 +1094,25 @@
         document.addEventListener('click', (e) => {
             if (e.target.closest('a')) return;
             createBurst(e.clientX, e.clientY);
-            setTimeout(() => { createBurst(e.clientX, e.clientY, 12); }, 50);
+            setTimeout(() => { createBurst(e.clientX, e.clientY, isMobile ? 6 : 12); }, 60);
         });
 
-        function init() {
-            resizeTrailCanvas();
-            resizeParticleCanvas();
-            animateTrail();
-            animateParticles();
-
-            window.addEventListener('resize', () => {
-                resizeTrailCanvas();
-                resizeParticleCanvas();
-            });
+        /* На телефоне — звёздочки при касании */
+        if (isMobile) {
+            document.addEventListener('touchstart', (e) => {
+                if (e.target.closest('a')) return;
+                const touch = e.touches[0];
+                if (touch) {
+                    createBurst(touch.clientX, touch.clientY);
+                    setTimeout(() => { createBurst(touch.clientX, touch.clientY, 6); }, 60);
+                }
+            }, { passive: true });
         }
 
-        init();
+        resizeParticleCanvas();
+        animateParticles();
+
+        window.addEventListener('resize', resizeParticleCanvas);
     </script>
 
 </body>
