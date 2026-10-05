@@ -34,7 +34,6 @@
             cursor: default;
         }
 
-        /* ===== ФИКСИРОВАННЫЙ ФОН ЧЕРЕЗ ОТДЕЛЬНЫЙ СЛОЙ (не дёргается на мобильных) ===== */
         .bg-layer {
             position: fixed;
             top: 0;
@@ -64,7 +63,6 @@
             pointer-events: none;
         }
 
-        /* ===== МОБИЛЬНАЯ ВЕРСИЯ ФОНА ===== */
         @media (max-width: 768px), (hover: none) and (pointer: coarse) {
             .bg-layer {
                 background: url('https://i.postimg.cc/2595sKzR/3bef7fd083700288677a85e1b0942848.jpg') center/cover no-repeat;
@@ -552,6 +550,32 @@
             text-align: left;
         }
 
+        .about-text + .about-text {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .about-note {
+            font-size: 10px;
+            line-height: 2.1;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+            padding: 0 50px;
+            text-align: left;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .about-note strong {
+            color: #FF6BC2;
+            font-weight: normal;
+            text-shadow: 0 0 15px rgba(255, 107, 194, 0.4);
+        }
+
         .about-link {
             color: #FF6BC2;
             text-decoration: none;
@@ -590,36 +614,28 @@
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
-        /* ============================================= */
-        /* ===== МОБИЛЬНАЯ ОПТИМИЗАЦИЯ ===== */
-        /* ============================================= */
         @media (max-width: 768px), (hover: none) and (pointer: coarse) {
             body {
                 padding: 12px;
                 font-size: 11px;
             }
 
-            /* Убираем свечения на фоне */
             .bg-glow {
                 display: none;
             }
 
-            /* Убираем след за мышкой */
             #trail-canvas {
                 display: none;
             }
 
-            /* Убираем парение фреймов */
             .frame {
                 animation: fadeUp 0.6s ease forwards !important;
             }
 
-            /* Убираем вращение декоративных картинок */
             .deco-corner {
                 animation: none;
             }
 
-            /* Убираем анимацию мерцания звёздочек в заголовке */
             .page-title::before,
             .page-title::after {
                 animation: none;
@@ -711,6 +727,19 @@
                 line-height: 2;
             }
 
+            .about-text + .about-text {
+                margin-top: 18px;
+                padding-top: 16px;
+            }
+
+            .about-note {
+                font-size: 9px;
+                padding: 0 30px;
+                line-height: 2;
+                margin-top: 18px;
+                padding-top: 16px;
+            }
+
             .footer-note {
                 font-size: 8px;
                 padding: 16px 0;
@@ -781,6 +810,19 @@
                 font-size: 8px;
                 padding: 0 20px;
                 line-height: 1.9;
+            }
+
+            .about-text + .about-text {
+                margin-top: 14px;
+                padding-top: 12px;
+            }
+
+            .about-note {
+                font-size: 8px;
+                padding: 0 20px;
+                line-height: 1.9;
+                margin-top: 14px;
+                padding-top: 12px;
             }
 
             .footer-note {
@@ -865,7 +907,10 @@
             <img class="deco-corner" src="https://i.postimg.cc/05B4Bgh5/venlenl.png" alt="deco" loading="lazy">
             <div class="section-title">☆ обо мне</div>
             <p class="about-text">
-                Привет! Я Шмель и создаю сайты для разных целей в разных стилях. Применяю в своей работе ИИ, а также умею работать с GitHub, Cloudflare и другими сервисами, которые помогают воплощать всякие задумки. Если хочешь сделать сайт на заказ, отправь свою заявку <a class="about-link" href="https://bumb1erbee.github.io/customwebs" target="_blank">здесь</a>!
+                Привет! Я Шмель и создаю сайты для разных целей в разных стилях. Применяю в своей работе ИИ, но понимаю код, а также умею работать с GitHub, Cloudflare и другими сервисами, которые помогают воплощать всякие задумки. Если хочешь сделать сайт на заказ, отправь свою заявку <a class="about-link" href="https://bumb1erbee.github.io/customwebs" target="_blank">здесь</a>!
+            </p>
+            <p class="about-note">
+                Примечание: я не профессиональный программист и активно использую ИИ. Если вы хотите, чтобы код был по большей части написан вручную, это не ко мне!
             </p>
         </div>
 
@@ -880,12 +925,8 @@
     </div>
 
     <script>
-        /* ===== ОПРЕДЕЛЯЕМ МОБИЛЬНОЕ УСТРОЙСТВО ===== */
         const isMobile = window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches;
 
-        /* ============================================= */
-        /* ===== СЛЕД ИЗ ЗВЁЗДОЧЕК ЗА МЫШКОЙ ===== */
-        /* ============================================= */
         if (!isMobile) {
             const trailCanvas = document.getElementById('trail-canvas');
             const trailCtx = trailCanvas.getContext('2d');
@@ -1004,9 +1045,6 @@
             window.addEventListener('resize', resizeTrailCanvas);
         }
 
-        /* ============================================= */
-        /* ===== ЗВЁЗДОЧКИ ПРИ КЛИКЕ ===== */
-        /* ============================================= */
         const particleCanvas = document.getElementById('particles-canvas');
         const particleCtx = particleCanvas.getContext('2d');
         let burstStars = [];
