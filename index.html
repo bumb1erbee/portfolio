@@ -585,7 +585,6 @@
 
         /* ===== ПОДСКАЗКА НА ПК: СБОКУ ОТ КАРТОЧКИ ===== */
         @media (hover: hover) and (pointer: fine) {
-            /* Все подсказки на ПК: ширина фиксированная, позиция по умолчанию */
             .link-tooltip {
                 top: 50%;
                 width: 320px;
@@ -593,16 +592,16 @@
                 transform: translateY(-50%);
             }
 
-            /* Левая колонка (1 и 3 карточки) — подсказка СПРАВА от карточки */
+            /* ЛЕВАЯ колонка (1 и 3 карточки) — подсказка СЛЕВА от карточки */
             .link-card:nth-child(odd) .link-tooltip {
-                left: calc(100% + 20px);
-                right: auto;
-            }
-
-            /* Правая колонка (2 и 4 карточки) — подсказка СЛЕВА от карточки */
-            .link-card:nth-child(even) .link-tooltip {
                 right: calc(100% + 20px);
                 left: auto;
+            }
+
+            /* ПРАВАЯ колонка (2 и 4 карточки) — подсказка СПРАВА от карточки */
+            .link-card:nth-child(even) .link-tooltip {
+                left: calc(100% + 20px);
+                right: auto;
             }
 
             .link-card:hover .link-tooltip {
@@ -1099,7 +1098,6 @@
                         holdTimer = null;
                     }
                     const holdDuration = Date.now() - holdStartTime;
-                    /* Если удерживали больше 400мс — не открываем ссылку */
                     if (holdDuration > 400) {
                         e.preventDefault();
                         e.stopPropagation();
@@ -1119,7 +1117,6 @@
                     card.classList.remove('holding');
                 });
 
-                /* Скрываем подсказку при клике вне карточки */
                 document.addEventListener('touchstart', (e) => {
                     if (!card.contains(e.target)) {
                         card.classList.remove('holding');
