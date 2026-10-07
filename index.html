@@ -441,12 +441,20 @@
             color: #ffffff;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
-            overflow: hidden;
             cursor: pointer;
             text-align: center;
         }
 
-        .link-card::before {
+        /* Отдельный слой для блика, который обрезается внутри карточки */
+        .link-card-inner {
+            position: absolute;
+            inset: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .link-card-inner::before {
             content: '';
             position: absolute;
             top: 0;
@@ -457,7 +465,7 @@
             transition: left 0.6s ease;
         }
 
-        .link-card:hover::before {
+        .link-card:hover .link-card-inner::before {
             left: 100%;
         }
 
@@ -483,6 +491,8 @@
             transition: all 0.4s ease;
             margin-bottom: 8px;
             align-self: center;
+            position: relative;
+            z-index: 2;
         }
 
         .link-card:hover .link-icon {
@@ -495,6 +505,8 @@
             color: rgba(234, 137, 190, 0.6);
             letter-spacing: 2px;
             transition: color 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
 
         .link-card:hover .link-number {
@@ -507,6 +519,8 @@
             color: #ffffff;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
             transition: text-shadow 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
 
         .link-card:hover .link-title {
@@ -521,6 +535,8 @@
             line-height: 1.7;
             letter-spacing: 0.5px;
             transition: color 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
 
         .link-card:hover .link-desc {
@@ -533,6 +549,8 @@
             margin-top: auto;
             transition: all 0.3s ease;
             align-self: center;
+            position: relative;
+            z-index: 2;
         }
 
         .link-card:hover .link-arrow {
@@ -555,7 +573,7 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.35s ease, visibility 0.35s ease;
-            z-index: 20;
+            z-index: 30;
             pointer-events: none;
             overflow: hidden;
             border: 2px solid rgba(234, 137, 190, 0.35);
@@ -592,13 +610,13 @@
                 transform: translateY(-50%);
             }
 
-            /* ЛЕВАЯ колонка (1 и 3 карточки) — подсказка СЛЕВА от карточки */
+            /* ЛЕВАЯ колонка (1 и 3 карточки) — подсказка СЛЕВА */
             .link-card:nth-child(odd) .link-tooltip {
                 right: calc(100% + 20px);
                 left: auto;
             }
 
-            /* ПРАВАЯ колонка (2 и 4 карточки) — подсказка СПРАВА от карточки */
+            /* ПРАВАЯ колонка (2 и 4 карточки) — подсказка СПРАВА */
             .link-card:nth-child(even) .link-tooltip {
                 left: calc(100% + 20px);
                 right: auto;
@@ -629,7 +647,6 @@
             }
         }
 
-        /* Маленькая подсказка "удерживайте" — только на мобильных */
         .hold-hint {
             display: none;
             font-size: 7px;
@@ -637,6 +654,8 @@
             letter-spacing: 0.5px;
             margin-top: 4px;
             transition: opacity 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
 
         @media (hover: none) and (pointer: coarse) {
@@ -1000,6 +1019,7 @@
             <div class="links-grid">
 
                 <a class="link-card" href="https://bumb1erbee.github.io/pony-town-gallery" target="_blank">
+                    <span class="link-card-inner"></span>
                     <img class="link-icon" src="https://i.postimg.cc/5NBYjJBn/favicon.png" alt="Pony Town Gallery" loading="lazy">
                     <span class="link-number">01</span>
                     <span class="link-title">Pony Town Gallery</span>
@@ -1012,6 +1032,7 @@
                 </a>
 
                 <a class="link-card" href="https://bumb1erbee.github.io/my-profile-1" target="_blank">
+                    <span class="link-card-inner"></span>
                     <img class="link-icon" src="https://i.postimg.cc/LsXnyZrG/34b92c675ca0207a6c2255db2c7e0246-no-bg-preview-(carve-photos).png" alt="Webcore-профиль" loading="lazy">
                     <span class="link-number">02</span>
                     <span class="link-title">Webcore-профиль</span>
@@ -1024,6 +1045,7 @@
                 </a>
 
                 <a class="link-card" href="https://bumb1erbee.github.io/profile_1" target="_blank">
+                    <span class="link-card-inner"></span>
                     <img class="link-icon" src="https://i.postimg.cc/brXrNVdK/ebfb06438b903069e40d59e44d794e10-no-bg-preview-(carve-photos).png" alt="Лесной профиль" loading="lazy">
                     <span class="link-number">03</span>
                     <span class="link-title">Лесной профиль</span>
@@ -1036,6 +1058,7 @@
                 </a>
 
                 <a class="link-card" href="https://bumb1erbee.github.io/customwebs" target="_blank">
+                    <span class="link-card-inner"></span>
                     <img class="link-icon" src="https://i.postimg.cc/jqNCkTFn/cdd55049588a94f69e3d3c551abf16c3-fotor-bg-remover-20260730182149.png" alt="Сайты на заказ" loading="lazy">
                     <span class="link-number">04</span>
                     <span class="link-title">Сайты на заказ</span>
@@ -1075,9 +1098,6 @@
     <script>
         const isMobile = window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches;
 
-        /* ============================================= */
-        /* ===== УДЕРЖИВАНИЕ КАРТОЧЕК НА МОБИЛЬНЫХ ===== */
-        /* ============================================= */
         if (isMobile) {
             const linkCards = document.querySelectorAll('.link-card');
 
