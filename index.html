@@ -63,19 +63,21 @@
             pointer-events: none;
         }
 
+        /* ===== МОБИЛЬНЫЙ ФОН: ЗАЦИКЛЕННЫЙ, СТАТИЧНЫЙ ===== */
         @media (max-width: 768px), (hover: none) and (pointer: coarse) {
             .bg-layer {
-                background: url('https://i.postimg.cc/2595sKzR/3bef7fd083700288677a85e1b0942848.jpg') center/cover no-repeat;
-                background-attachment: scroll;
-                background-size: cover;
-                background-position: center center;
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100vw;
                 height: 100vh;
-                height: 100dvh;
+                background-image: url('https://i.postimg.cc/2595sKzR/3bef7fd083700288677a85e1b0942848.jpg');
+                background-size: 100vw auto;
+                background-position: top center;
+                background-repeat: repeat-y;
+                background-attachment: scroll;
                 will-change: auto;
+                filter: brightness(0.85) saturate(0.9) contrast(1.05);
             }
         }
 
@@ -429,7 +431,6 @@
             50% { opacity: 1; transform: translateY(-50%) scale(1.2); }
         }
 
-        /* Подсказка для мобильных (одна строка под заголовком) */
         .mobile-hint {
             display: none;
             font-size: 8px;
@@ -580,7 +581,6 @@
             transform: translateX(6px);
         }
 
-        /* ===== ВСПЛЫВАЮЩАЯ ПОДСКАЗКА С ОПИСАНИЕМ ===== */
         .link-tooltip {
             position: absolute;
             background: rgba(15, 12, 20, 0.97);
@@ -641,7 +641,6 @@
             z-index: 2;
         }
 
-        /* ===== ПОДСКАЗКА НА ПК: СБОКУ ОТ КАРТОЧКИ ===== */
         @media (hover: hover) and (pointer: fine) {
             .link-tooltip {
                 top: 50%;
@@ -670,7 +669,6 @@
             }
         }
 
-        /* ===== ПОДСКАЗКА НА МОБИЛЬНЫХ: ПОКАЗ ПРИ ДВОЙНОМ КЛИКЕ ===== */
         @media (hover: none) and (pointer: coarse), (max-width: 768px) {
             .link-tooltip {
                 top: 0;
@@ -775,16 +773,12 @@
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
-        /* ============================================= */
-        /* ===== МОБИЛЬНАЯ ВЕРСИЯ: УБИРАЕМ АНИМАЦИИ ===== */
-        /* ============================================= */
         @media (max-width: 768px), (hover: none) and (pointer: coarse) {
             body {
                 padding: 12px;
                 font-size: 11px;
             }
 
-            /* Убираем все анимации на мобильных */
             .bg-glow {
                 display: none;
             }
@@ -793,7 +787,6 @@
                 display: none;
             }
 
-            /* Убираем парение фреймов и появление */
             .frame {
                 animation: none !important;
                 opacity: 1 !important;
@@ -808,12 +801,10 @@
                 transform: none;
             }
 
-            /* Убираем вращение декоративных картинок */
             .deco-corner {
                 animation: none !important;
             }
 
-            /* Убираем мерцание звёздочек в заголовке */
             .page-title::before,
             .page-title::after {
                 animation: none !important;
@@ -825,18 +816,15 @@
                 opacity: 1 !important;
             }
 
-            /* Убираем пульсацию иконки возле заголовков */
             .section-title::before {
                 animation: none !important;
                 opacity: 0.7;
             }
 
-            /* Убираем пульсацию точки на подсказке */
             .link-tooltip::after {
                 animation: none !important;
             }
 
-            /* Убираем все hover-эффекты */
             .frame:hover {
                 border-color: rgba(255, 255, 255, 0.12);
                 background: rgba(25, 22, 30, 0.45);
@@ -881,7 +869,6 @@
                 left: -100%;
             }
 
-            /* Показываем мобильную подсказку */
             .mobile-hint {
                 display: block;
             }
@@ -1197,12 +1184,8 @@
     <script>
         const isMobile = window.matchMedia('(max-width: 768px), (hover: none) and (pointer: coarse)').matches;
 
-        /* ============================================= */
-        /* ===== МОБИЛЬНАЯ ВЕРСИЯ: ДВОЙНОЙ КЛИК ===== */
-        /* ============================================= */
         if (isMobile) {
             const linkCards = document.querySelectorAll('.link-card');
-            let clickTimers = {};
 
             linkCards.forEach(card => {
                 let clickCount = 0;
@@ -1214,29 +1197,23 @@
                     clickCount++;
 
                     if (clickCount === 1) {
-                        /* Ждём 300мс — может, будет второй клик */
                         singleClickTimer = setTimeout(() => {
-                            /* Одиночный клик — переходим по ссылке */
                             clickCount = 0;
                             window.open(card.href, '_blank');
                         }, 300);
                     } else if (clickCount === 2) {
-                        /* Двойной клик — показываем подсказку */
                         clearTimeout(singleClickTimer);
                         clickCount = 0;
 
-                        /* Скрываем подсказки у всех остальных */
                         linkCards.forEach(c => {
                             if (c !== card) c.classList.remove('showing');
                         });
 
-                        /* Показываем подсказку у текущей */
                         card.classList.toggle('showing');
                     }
                 });
             });
 
-            /* Скрываем подсказки при прокрутке */
             let scrollTimeout = null;
             window.addEventListener('scroll', () => {
                 if (scrollTimeout) return;
@@ -1246,7 +1223,6 @@
                 linkCards.forEach(card => card.classList.remove('showing'));
             }, { passive: true });
 
-            /* Скрываем подсказки при клике вне плашки */
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('.link-card')) {
                     linkCards.forEach(card => card.classList.remove('showing'));
