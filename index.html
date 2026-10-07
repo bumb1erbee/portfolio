@@ -440,7 +440,7 @@
             color: #ffffff;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             cursor: pointer;
             text-align: center;
         }
@@ -454,6 +454,7 @@
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(234, 137, 190, 0.15), transparent);
             transition: left 0.6s ease;
+            border-radius: 10px;
         }
 
         .link-card:hover::before {
@@ -537,6 +538,118 @@
         .link-card:hover .link-arrow {
             color: #ffffff;
             transform: translateX(6px);
+        }
+
+        /* ===== ВСПЛЫВАЮЩАЯ ПОДСКАЗКА С ОПИСАНИЕМ ПРОЕКТА ===== */
+        .project-tooltip {
+            position: absolute;
+            bottom: calc(100% + 16px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: calc(100% - 20px);
+            max-width: 340px;
+            background: rgba(20, 18, 30, 0.96);
+            border: 2px solid rgba(234, 137, 190, 0.5);
+            border-radius: 8px;
+            padding: 16px 18px;
+            font-size: 9px;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.5px;
+            text-align: left;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(234, 137, 190, 0.2);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .project-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: rgba(234, 137, 190, 0.5);
+        }
+
+        .project-tooltip::before {
+            content: '✦ подробнее';
+            display: block;
+            font-size: 8px;
+            color: #EA89BE;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(234, 137, 190, 0.5);
+        }
+
+        /* Появление подсказки при наведении (ПК) */
+        .link-card:hover .project-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== ПОДСКАЗКА "УДЕРЖИВАЙТЕ" ДЛЯ ТЕЛЕФОНА ===== */
+        .touch-hint {
+            display: none;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 7px;
+            color: rgba(234, 137, 190, 0.7);
+            letter-spacing: 1px;
+            background: rgba(10, 8, 18, 0.7);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(234, 137, 190, 0.3);
+            text-transform: uppercase;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px), (hover: none) and (pointer: coarse) {
+            .touch-hint {
+                display: block;
+            }
+
+            /* На телефоне подсказка показывается через JS-класс .show */
+            .project-tooltip {
+                bottom: auto;
+                top: calc(100% + 16px);
+                transform: translateX(-50%) translateY(-10px);
+                max-width: 90%;
+            }
+
+            .project-tooltip::after {
+                top: auto;
+                bottom: 100%;
+                border-top-color: transparent;
+                border-bottom-color: rgba(234, 137, 190, 0.5);
+            }
+
+            .link-card.show-tooltip .project-tooltip {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            .link-card.show-tooltip {
+                border-color: rgba(234, 137, 190, 0.5);
+                background: rgba(255, 255, 255, 0.1);
+                box-shadow: 
+                    0 10px 40px rgba(234, 137, 190, 0.2),
+                    0 0 60px rgba(87, 211, 211, 0.1);
+            }
+
+            .link-card.show-tooltip .link-icon {
+                filter: drop-shadow(0 0 22px rgba(234, 137, 190, 0.7));
+                transform: scale(1.1) rotate(-3deg);
+            }
         }
 
         .about-text {
@@ -721,6 +834,11 @@
                 font-size: 9px;
             }
 
+            .project-tooltip {
+                font-size: 8px;
+                padding: 14px 16px;
+            }
+
             .about-text {
                 font-size: 10px;
                 padding: 0 30px;
@@ -806,6 +924,17 @@
                 font-size: 7px;
             }
 
+            .project-tooltip {
+                font-size: 7px;
+                padding: 12px 14px;
+                max-width: 95%;
+            }
+
+            .touch-hint {
+                font-size: 6px;
+                padding: 3px 6px;
+            }
+
             .about-text {
                 font-size: 8px;
                 padding: 0 20px;
@@ -868,6 +997,10 @@
             <div class="links-grid">
 
                 <a class="link-card" href="https://bumb1erbee.github.io/pony-town-gallery" target="_blank">
+                    <div class="project-tooltip">
+                        Этот сайт имеет большую историю. Помимо того, что вы можете изучить самостоятельно, он имеет несколько видов административных панелей, которые скрыты от обычных пользователей. Сайт неоднократно пытались атаковать, поэтому я хорошо потрудился, чтобы изучить, как его защитить, и мои труды увенчались успехом
+                    </div>
+                    <span class="touch-hint">удерживайте</span>
                     <img class="link-icon" src="https://i.postimg.cc/5NBYjJBn/favicon.png" alt="Pony Town Gallery" loading="lazy">
                     <span class="link-number">01</span>
                     <span class="link-title">Pony Town Gallery</span>
@@ -876,6 +1009,10 @@
                 </a>
 
                 <a class="link-card" href="https://bumb1erbee.github.io/my-profile-1" target="_blank">
+                    <div class="project-tooltip">
+                        Мой первый сайт-профиль, сделанный в webcore тематике. Я сделал его, а позже добавил раздел со своими проектами, а также возможность напрямую заказать у меня сайт
+                    </div>
+                    <span class="touch-hint">удерживайте</span>
                     <img class="link-icon" src="https://i.postimg.cc/LsXnyZrG/34b92c675ca0207a6c2255db2c7e0246-no-bg-preview-(carve-photos).png" alt="Webcore-профиль" loading="lazy">
                     <span class="link-number">02</span>
                     <span class="link-title">Webcore-профиль</span>
@@ -884,6 +1021,10 @@
                 </a>
 
                 <a class="link-card" href="https://bumb1erbee.github.io/profile_1" target="_blank">
+                    <div class="project-tooltip">
+                        Первый сайт-профиль, который я сделал на заказ. Тут я впервые попробовал добавить анимированные изображения на фон
+                    </div>
+                    <span class="touch-hint">удерживайте</span>
                     <img class="link-icon" src="https://i.postimg.cc/brXrNVdK/ebfb06438b903069e40d59e44d794e10-no-bg-preview-(carve-photos).png" alt="Лесной профиль" loading="lazy">
                     <span class="link-number">03</span>
                     <span class="link-title">Лесной профиль</span>
@@ -892,6 +1033,10 @@
                 </a>
 
                 <a class="link-card" href="https://bumb1erbee.github.io/customwebs" target="_blank">
+                    <div class="project-tooltip">
+                        Сайт, где вы можете сделать собственный заказ. Он сделан в стиле моего webcore-профиля, но имеет одно предназначение и возможность задать вопрос при заказе. Создавая этот сайт, я разобрался в том, как добиться того, чтобы все заказы моментально отправлялись мне в telegram
+                    </div>
+                    <span class="touch-hint">удерживайте</span>
                     <img class="link-icon" src="https://i.postimg.cc/jqNCkTFn/cdd55049588a94f69e3d3c551abf16c3-fotor-bg-remover-20260730182149.png" alt="Сайты на заказ" loading="lazy">
                     <span class="link-number">04</span>
                     <span class="link-title">Сайты на заказ</span>
@@ -1152,6 +1297,43 @@
                     setTimeout(() => { createBurst(touch.clientX, touch.clientY, 6); }, 60);
                 }
             }, { passive: true });
+        }
+
+        /* ===== ОБРАБОТКА УДЕРЖИВАНИЯ НА ТЕЛЕФОНЕ ===== */
+        if (isMobile) {
+            document.querySelectorAll('.link-card').forEach(card => {
+                let holdTimer = null;
+                let isHolding = false;
+
+                const startHold = (e) => {
+                    isHolding = false;
+                    holdTimer = setTimeout(() => {
+                        isHolding = true;
+                        card.classList.add('show-tooltip');
+                    }, 400);
+                };
+
+                const endHold = () => {
+                    if (holdTimer) {
+                        clearTimeout(holdTimer);
+                        holdTimer = null;
+                    }
+                    card.classList.remove('show-tooltip');
+                };
+
+                /* Блокируем переход по ссылке, если пользователь удерживает */
+                card.addEventListener('click', (e) => {
+                    if (isHolding) {
+                        e.preventDefault();
+                        isHolding = false;
+                    }
+                });
+
+                card.addEventListener('touchstart', startHold, { passive: true });
+                card.addEventListener('touchend', endHold);
+                card.addEventListener('touchcancel', endHold);
+                card.addEventListener('touchmove', endHold, { passive: true });
+            });
         }
 
         resizeParticleCanvas();
